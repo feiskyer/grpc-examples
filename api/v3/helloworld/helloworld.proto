@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package helloworld;
+
+// The greeting service definition.
+service Greeter {
+  rpc SayHello(HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing user and client version.
+// Note: name is removed compared to version v2
+message HelloRequest {
+  string version = 1;
+  string user = 3;
+}
+
+// The response message containing the greetings and server's version.
+message HelloReply {
+  string version = 1;
+  string message = 2;
+}

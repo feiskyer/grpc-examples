@@ -1,0 +1,75 @@
+{
+	"ImportPath": "github.com/feiskyer/grpc-examples",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v62",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/gogo/protobuf/proto",
+			"Comment": "v0.1-125-g82d16f7",
+			"Rev": "82d16f734d6d871204a3feb1a73cb220cc92574c"
+		},
+		{
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Rev": "9e6977f30c91c78396e719e164e57f9287fff42c"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "b400c2eff1badec7022a8c8f5bea058b6315eed7"
+		},
+		{
+			"ImportPath": "golang.org/x/net/http2",
+			"Rev": "b400c2eff1badec7022a8c8f5bea058b6315eed7"
+		},
+		{
+			"ImportPath": "golang.org/x/net/http2/hpack",
+			"Rev": "b400c2eff1badec7022a8c8f5bea058b6315eed7"
+		},
+		{
+			"ImportPath": "golang.org/x/net/internal/timeseries",
+			"Rev": "b400c2eff1badec7022a8c8f5bea058b6315eed7"
+		},
+		{
+			"ImportPath": "golang.org/x/net/lex/httplex",
+			"Rev": "b400c2eff1badec7022a8c8f5bea058b6315eed7"
+		},
+		{
+			"ImportPath": "golang.org/x/net/trace",
+			"Rev": "b400c2eff1badec7022a8c8f5bea058b6315eed7"
+		},
+		{
+			"ImportPath": "google.golang.org/grpc",
+			"Rev": "933601d8cd6418a8a891bd9075a7161b0a67badb"
+		},
+		{
+			"ImportPath": "google.golang.org/grpc/codes",
+			"Rev": "933601d8cd6418a8a891bd9075a7161b0a67badb"
+		},
+		{
+			"ImportPath": "google.golang.org/grpc/credentials",
+			"Rev": "933601d8cd6418a8a891bd9075a7161b0a67badb"
+		},
+		{
+			"ImportPath": "google.golang.org/grpc/grpclog",
+			"Rev": "933601d8cd6418a8a891bd9075a7161b0a67badb"
+		},
+		{
+			"ImportPath": "google.golang.org/grpc/metadata",
+			"Rev": "933601d8cd6418a8a891bd9075a7161b0a67badb"
+		},
+		{
+			"ImportPath": "google.golang.org/grpc/naming",
+			"Rev": "933601d8cd6418a8a891bd9075a7161b0a67badb"
+		},
+		{
+			"ImportPath": "google.golang.org/grpc/peer",
+			"Rev": "933601d8cd6418a8a891bd9075a7161b0a67badb"
+		},
+		{
+			"ImportPath": "google.golang.org/grpc/transport",
+			"Rev": "933601d8cd6418a8a891bd9075a7161b0a67badb"
+		}
+	]
+}
