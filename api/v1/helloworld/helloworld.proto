@@ -1,20 +1,30 @@
+/*
+ * First version of grpc helloworld service
+ */
 syntax = "proto3";
 
 package helloworld;
 
 // The greeting service definition.
 service Greeter {
+  rpc Version(VersionRequest) returns (VersionResponse) {}
   rpc SayHello(HelloRequest) returns (HelloReply) {}
 }
 
 // The request message containing the user's name and client version.
 message HelloRequest {
-  string version = 1;
-  string name = 2;
+  string name = 1;
 }
 
 // The response message containing the greetings and server's version.
 message HelloReply {
-  string version = 1;
-  string message = 2;
+  string message = 1;
+}
+
+message VersionRequest{
+  string version =1;
+}
+
+message VersionResponse{
+  string version =1;
 }

@@ -7,6 +7,11 @@
 	],
 	"Deps": [
 		{
+			"ImportPath": "github.com/coreos/go-semver/semver",
+			"Comment": "v0.1.0",
+			"Rev": "294930c1e79c64e7dbe360054274fdad492c8cf5"
+		},
+		{
 			"ImportPath": "github.com/gogo/protobuf/proto",
 			"Comment": "v0.1-125-g82d16f7",
 			"Rev": "82d16f734d6d871204a3feb1a73cb220cc92574c"

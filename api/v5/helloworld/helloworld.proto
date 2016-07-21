@@ -1,9 +1,9 @@
 /*
- * Version 2 of grpc helloworld service
- * This version deprecated HelloRequest.Name and replaced it with HelloRequest.User
- * Since `name` is not removed yet, client could continue setting value for name in 
- * order to be compatible with old versions.
+ * Version 5 of grpc helloworld service
+ * This version adds SayNewHello which returns a stream resp
+ * To keep compatible with old versions (e.g. v2), it remains SayHello as is.
  */
+
 syntax = "proto3";
 
 package helloworld;
@@ -12,13 +12,12 @@ package helloworld;
 service Greeter {
   rpc Version(VersionRequest) returns (VersionResponse) {}
   rpc SayHello(HelloRequest) returns (HelloReply) {}
+  rpc SayNewHello(HelloRequest) returns (stream HelloReply) {}
 }
 
-// The request message containing the user's name and client version.
-// Note: name is deprecated, and user is for replacing it.
+// The request message containing name and client version.
 message HelloRequest {
-  string name = 1 [deprecated=true];
-  string user = 2;
+  string name = 1;
 }
 
 // The response message containing the greetings and server's version.

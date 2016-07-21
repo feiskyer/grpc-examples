@@ -11,6 +11,8 @@ It is generated from these files:
 It has these top-level messages:
 	HelloRequest
 	HelloReply
+	VersionRequest
+	VersionResponse
 */
 package helloworld
 
@@ -31,9 +33,8 @@ var _ = math.Inf
 // The request message containing the user's name and client version.
 // Note: name is deprecated, and user is for replacing it.
 type HelloRequest struct {
-	Version string `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
-	Name    string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	User    string `protobuf:"bytes,3,opt,name=user,proto3" json:"user,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	User string `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
 }
 
 func (m *HelloRequest) Reset()         { *m = HelloRequest{} }
@@ -42,17 +43,34 @@ func (*HelloRequest) ProtoMessage()    {}
 
 // The response message containing the greetings and server's version.
 type HelloReply struct {
-	Version string `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
-	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 }
 
 func (m *HelloReply) Reset()         { *m = HelloReply{} }
 func (m *HelloReply) String() string { return proto.CompactTextString(m) }
 func (*HelloReply) ProtoMessage()    {}
 
+type VersionRequest struct {
+	Version string `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+}
+
+func (m *VersionRequest) Reset()         { *m = VersionRequest{} }
+func (m *VersionRequest) String() string { return proto.CompactTextString(m) }
+func (*VersionRequest) ProtoMessage()    {}
+
+type VersionResponse struct {
+	Version string `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+}
+
+func (m *VersionResponse) Reset()         { *m = VersionResponse{} }
+func (m *VersionResponse) String() string { return proto.CompactTextString(m) }
+func (*VersionResponse) ProtoMessage()    {}
+
 func init() {
 	proto.RegisterType((*HelloRequest)(nil), "helloworld.HelloRequest")
 	proto.RegisterType((*HelloReply)(nil), "helloworld.HelloReply")
+	proto.RegisterType((*VersionRequest)(nil), "helloworld.VersionRequest")
+	proto.RegisterType((*VersionResponse)(nil), "helloworld.VersionResponse")
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -62,6 +80,7 @@ var _ grpc.ClientConn
 // Client API for Greeter service
 
 type GreeterClient interface {
+	Version(ctx context.Context, in *VersionRequest, opts ...grpc.CallOption) (*VersionResponse, error)
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
 }
 
@@ -71,6 +90,15 @@ type greeterClient struct {
 
 func NewGreeterClient(cc *grpc.ClientConn) GreeterClient {
 	return &greeterClient{cc}
+}
+
+func (c *greeterClient) Version(ctx context.Context, in *VersionRequest, opts ...grpc.CallOption) (*VersionResponse, error) {
+	out := new(VersionResponse)
+	err := grpc.Invoke(ctx, "/helloworld.Greeter/Version", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *greeterClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
@@ -85,11 +113,24 @@ func (c *greeterClient) SayHello(ctx context.Context, in *HelloRequest, opts ...
 // Server API for Greeter service
 
 type GreeterServer interface {
+	Version(context.Context, *VersionRequest) (*VersionResponse, error)
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
 }
 
 func RegisterGreeterServer(s *grpc.Server, srv GreeterServer) {
 	s.RegisterService(&_Greeter_serviceDesc, srv)
+}
+
+func _Greeter_Version_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+	in := new(VersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	out, err := srv.(GreeterServer).Version(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func _Greeter_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
@@ -108,6 +149,10 @@ var _Greeter_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "helloworld.Greeter",
 	HandlerType: (*GreeterServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Version",
+			Handler:    _Greeter_Version_Handler,
+		},
 		{
 			MethodName: "SayHello",
 			Handler:    _Greeter_SayHello_Handler,

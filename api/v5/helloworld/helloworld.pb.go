@@ -30,10 +30,9 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
-// The request message containing user and client version.
-// Note: name is removed compared to version v2
+// The request message containing name and client version.
 type HelloRequest struct {
-	User string `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 }
 
 func (m *HelloRequest) Reset()         { *m = HelloRequest{} }
@@ -81,6 +80,7 @@ var _ grpc.ClientConn
 type GreeterClient interface {
 	Version(ctx context.Context, in *VersionRequest, opts ...grpc.CallOption) (*VersionResponse, error)
 	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	SayNewHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (Greeter_SayNewHelloClient, error)
 }
 
 type greeterClient struct {
@@ -109,11 +109,44 @@ func (c *greeterClient) SayHello(ctx context.Context, in *HelloRequest, opts ...
 	return out, nil
 }
 
+func (c *greeterClient) SayNewHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (Greeter_SayNewHelloClient, error) {
+	stream, err := grpc.NewClientStream(ctx, &_Greeter_serviceDesc.Streams[0], c.cc, "/helloworld.Greeter/SayNewHello", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &greeterSayNewHelloClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Greeter_SayNewHelloClient interface {
+	Recv() (*HelloReply, error)
+	grpc.ClientStream
+}
+
+type greeterSayNewHelloClient struct {
+	grpc.ClientStream
+}
+
+func (x *greeterSayNewHelloClient) Recv() (*HelloReply, error) {
+	m := new(HelloReply)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // Server API for Greeter service
 
 type GreeterServer interface {
 	Version(context.Context, *VersionRequest) (*VersionResponse, error)
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
+	SayNewHello(*HelloRequest, Greeter_SayNewHelloServer) error
 }
 
 func RegisterGreeterServer(s *grpc.Server, srv GreeterServer) {
@@ -144,6 +177,27 @@ func _Greeter_SayHello_Handler(srv interface{}, ctx context.Context, dec func(in
 	return out, nil
 }
 
+func _Greeter_SayNewHello_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(HelloRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(GreeterServer).SayNewHello(m, &greeterSayNewHelloServer{stream})
+}
+
+type Greeter_SayNewHelloServer interface {
+	Send(*HelloReply) error
+	grpc.ServerStream
+}
+
+type greeterSayNewHelloServer struct {
+	grpc.ServerStream
+}
+
+func (x *greeterSayNewHelloServer) Send(m *HelloReply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 var _Greeter_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "helloworld.Greeter",
 	HandlerType: (*GreeterServer)(nil),
@@ -157,5 +211,11 @@ var _Greeter_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Greeter_SayHello_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "SayNewHello",
+			Handler:       _Greeter_SayNewHello_Handler,
+			ServerStreams: true,
+		},
+	},
 }

@@ -1,5 +1,8 @@
 /*
- * First version of grpc helloworld service
+ * Version 4 of grpc helloworld service
+ * This version changes SayHello to stream response.
+ * All clients/servers of old versions will not work any more (can not compile actually)
+ * because of introduced stream.
  */
 package main
 
@@ -7,7 +10,7 @@ import (
 	"log"
 	"os"
 
-	pb "github.com/feiskyer/grpc-examples/api/v1/helloworld"
+	pb "github.com/feiskyer/grpc-examples/api/v4/helloworld"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
@@ -15,7 +18,7 @@ import (
 const (
 	address     = "localhost:50051"
 	defaultName = "world"
-	version     = "0.1.0"
+	version     = "0.4.0"
 )
 
 func main() {
@@ -32,8 +35,8 @@ func main() {
 	if len(os.Args) > 1 {
 		name = os.Args[1]
 	}
-	log.Printf("Request with client version: %s", version)
 
+	log.Printf("Request with client version: %s", version)
 	v, err := c.Version(context.Background(), &pb.VersionRequest{
 		Version: version,
 	})
@@ -43,7 +46,7 @@ func main() {
 	log.Printf("Got server's version: %s", v.Version)
 
 	r, err := c.SayHello(context.Background(), &pb.HelloRequest{
-		Name: name,
+		User: name,
 	})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)

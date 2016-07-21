@@ -1,3 +1,8 @@
+/*
+ * Version 3 of grpc helloworld service
+ * This version removes HelloRequest.Name.
+ * Since `name` is removed yet, all clients/servers depending on it will not work any more.
+ */
 package main
 
 import (
@@ -12,7 +17,7 @@ import (
 const (
 	address     = "localhost:50051"
 	defaultName = "world"
-	version     = "0.3"
+	version     = "0.3.0"
 )
 
 func main() {
@@ -29,15 +34,22 @@ func main() {
 	if len(os.Args) > 1 {
 		name = os.Args[1]
 	}
+
 	log.Printf("Request with client version: %s", version)
-	r, err := c.SayHello(context.Background(), &pb.HelloRequest{
-		User:    name,
+	v, err := c.Version(context.Background(), &pb.VersionRequest{
 		Version: version,
 	})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
+	log.Printf("Got server's version: %s", v.Version)
 
-	log.Printf("Got server's version: %s", r.Version)
+	r, err := c.SayHello(context.Background(), &pb.HelloRequest{
+		User: name,
+	})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+
 	log.Printf("Greeting: %s", r.Message)
 }

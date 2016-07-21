@@ -1,3 +1,7 @@
+/*
+ * First version of grpc helloworld service
+ * We will keep server always in v1 and change the version to check what will happen
+ */
 package main
 
 import (
@@ -11,7 +15,7 @@ import (
 
 const (
 	port    = ":50051"
-	version = "0.1"
+	version = "0.1.0"
 )
 
 // server is used to implement helloworld.GreeterServer.
@@ -19,10 +23,16 @@ type server struct{}
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	log.Printf("Got request: %s", in.String())
+	log.Printf("Got SayHello request: %s", in.String())
 	return &pb.HelloReply{
-		Version: version,
 		Message: "Hello " + in.Name,
+	}, nil
+}
+
+func (s *server) Version(ctx context.Context, in *pb.VersionRequest) (*pb.VersionResponse, error) {
+	log.Printf("Got version request: %s", in.String())
+	return &pb.VersionResponse{
+		Version: version,
 	}, nil
 }
 

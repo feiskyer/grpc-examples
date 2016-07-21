@@ -1,8 +1,10 @@
 /*
- * Version 3 of grpc helloworld service
- * This version removes HelloRequest.Name.
- * Since `name` is removed yet, all clients/servers depending on it will not work any more.
+ * Version 4 of grpc helloworld service
+ * This version changes SayHello to stream response.
+ * All clients/servers of old versions will not work any more (can not compile actually)
+ * because of introduced stream.
  */
+
 syntax = "proto3";
 
 package helloworld;
@@ -10,11 +12,10 @@ package helloworld;
 // The greeting service definition.
 service Greeter {
   rpc Version(VersionRequest) returns (VersionResponse) {}
-  rpc SayHello(HelloRequest) returns (HelloReply) {}
+  rpc SayHello(HelloRequest) returns (stream HelloReply) {}
 }
 
 // The request message containing user and client version.
-// Note: name is removed compared to version v2
 message HelloRequest {
   string user = 2;
 }
